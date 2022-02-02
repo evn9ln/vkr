@@ -3,17 +3,17 @@ import matplotlib.pyplot as plt
 import os
 
 wavelength = 500 * nm
-size = 15 * mm
+size = 65 * mm
 N = 200
-w0 = 3 * mm
+w0 = 6 * mm
 i = 0
 
 # True - Laguerre-Gauss , False - Hermit-Gauss
 LG = True
 
 # m-порядок ; n - степень
-n_max = 3
-m_max = 16
+n_max = 12
+m_max = 64
 if LG:
     s = r'Laguerre-Gauss laser modes'
 else:
@@ -22,11 +22,8 @@ else:
 
 def save_to_file(F, I, Phi, s):
     plt.imshow(I, cmap='jet')
-    plt.title(s)
-    plt.axis('off')
-    plt.savefig(os.path.abspath('C:/Users/bekht/PycharmProjects/vkr/dataset') + '/' + str(s) + '.jpg',
-                bbox_inches='tight')
-    plt.show() #по очереди
+    plt.imsave(os.path.abspath('C:/Users/bekht/Desktop/diplom/HG2') + '/' + str(s) + '.png', I)
+    # plt.show() #по очереди
 
 
 F = Begin(size, wavelength, N)
@@ -36,8 +33,8 @@ for m in range(int(m_max / 2)):
         I = Intensity(0, F)
         Phi = Phase(F)
         if LG:
-            s = f'LG_{n}' + f'{m}'
+            s = f'LG_{n}' + f'{m}' + " w=6 size=50"
         else:
-            s = f'HG_{n}' + f'{m}'
+            s = f'HG_{n}' + f'{m}' + " w=6 size=70"
         save_to_file(F, I, Phi, s)
     i += 1
