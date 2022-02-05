@@ -88,7 +88,7 @@ def predictionOutput(prediction):
     if prediction == 0:
         return 'LG'
     else:
-        return 'LG'
+        return 'HG'
 
 
 def predictionInConsole(tempPredictions, validation_ds, count):
@@ -143,11 +143,11 @@ if __name__ == '__main__':
     epochs = 3
 
     # data
-    trainDataSetPath1 = os.path.abspath('C:/train2')
-    # trainDataSetPath2 = os.path.abspath('C:/DataSet/train2')
-    validationDataSetPath1 = os.path.abspath('C:/test2')
-    # validationDataSetPath2 = os.path.abspath('C:/DataSet/validation2')
-    # validationDataSetPath3 = os.path.abspath('C:/DataSet/validation3')
+    trainDataSetPath1 = os.path.abspath('C:/datasets/train3')
+    # trainDataSetPath2 = os.path.abspath('C:/datasets/train2')
+    validationDataSetPath1 = os.path.abspath('C:/datasets/test3')
+    # validationDataSetPath2 = os.path.abspath('C:/datasets/test2')
+    # validationDataSetPath3 = os.path.abspath('C:/datasets/test3')
 
     trainDataSet1 = image_dataset_from_directory(
         directory=trainDataSetPath1
@@ -166,7 +166,7 @@ if __name__ == '__main__':
     #     directory=validationDataSetPath2,
     #     shuffle=False
     # )
-
+    #
     # validationDataSet3 = image_dataset_from_directory(
     #     directory=validationDataSetPath3,
     #     shuffle=False
@@ -176,10 +176,10 @@ if __name__ == '__main__':
     model, history1 = fitModel(trainDataSet1, validationDataSet1, epochs)  # , history
     # model, history2 = fitModel(trainDataSet1, validationDataSet2, epochs)  # , history
     # model, history3 = fitModel(trainDataSet2, validationDataSet2, epochs)  # , history
-    # print(model.summary())
+    print(model.summary())
     tempHistoryPlot(history1)
 
-    # prediction
+    # # prediction
     # evaluateResult = model.evaluate(validationDataSet3, verbose=0)
     # print('loss: ' + str(evaluateResult[0]) + ' acc: ' + str(evaluateResult[1] * 100) + '%')
 
