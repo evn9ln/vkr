@@ -79,9 +79,14 @@ def fitModel(train_ds, validation_ds, tempEpochs):
     tempModel = createModelNN2()
     # tempModel = load_model('vkrTempFullDense.h5') # vkrTempFullDense vkr vkrTempFirstConv
     newHistory = tempModel.fit(train_ds, validation_data=validation_ds, epochs=tempEpochs)
-    # tempModel.save('vkrTempFullDense.h5')
+    tempModel.save('vkrTempFullDense.h5')
 
     return tempModel, newHistory
+
+def fitModelNew(validation_ds):
+    tempModel = tf.keras.models.load_model('vkrTempFullDense.h5') # vkrTempFullDense vkr vkrTempFirstConv
+    newHistory = tempModel.evaluate(validation_ds)
+    return newHistory
 
 
 def predictionOutput(prediction):
@@ -131,7 +136,23 @@ def tempHistoryPlot(history1):
     plt.title('Точность распознования')
     plt.ylabel('Точность')
     plt.xlabel('Эпохи')
-    plt.legend(['Обучение 1', 'Проверка 1', 'Обучение 2', 'Проверка 2', 'Обучение 3', 'Проверка 3'], loc='right')
+    plt.legend(['Обучение 1', 'Проверка 1', 'Проверка 2', 'Проверка 3'], loc='right')
+    plt.show()
+
+
+
+def tempHistoryPlotNew(history0, history1, history2, history3):
+    axes = plt.gca()
+    axes.set_xlim([0, 2])
+    axes.set_ylim([0, 1.1])
+    plt.plot(history0.history['accuracy'])
+    plt.plot(history1)
+    plt.plot(history2)
+    plt.plot(history3)
+    plt.title('Точность распознования')
+    plt.ylabel('Точность')
+    plt.xlabel('Эпохи')
+    plt.legend(['Обучение 1', 'Проверка 1', 'Проверка 2', 'Проверка 3'], loc='right')
     plt.show()
 
 
@@ -144,10 +165,11 @@ if __name__ == '__main__':
 
     # data
     trainDataSetPath1 = os.path.abspath('C:/datasets/train3')
+    validationDataSetPath = os.path.abspath('C:/datasets/test')
     # trainDataSetPath2 = os.path.abspath('C:/datasets/train2')
-    validationDataSetPath1 = os.path.abspath('C:/datasets/test3')
-    # validationDataSetPath2 = os.path.abspath('C:/datasets/test2')
-    # validationDataSetPath3 = os.path.abspath('C:/datasets/test3')
+    validationDataSetPath1 = os.path.abspath('C:/datasets/test1')
+    validationDataSetPath2 = os.path.abspath('C:/datasets/test2')
+    validationDataSetPath3 = os.path.abspath('C:/datasets/test3')
 
     trainDataSet1 = image_dataset_from_directory(
         directory=trainDataSetPath1
@@ -157,37 +179,43 @@ if __name__ == '__main__':
     #     directory=trainDataSetPath2
     # )
 
+    validationDataSet = image_dataset_from_directory(
+        directory=validationDataSetPath,
+        shuffle=False
+    )
+
     validationDataSet1 = image_dataset_from_directory(
         directory=validationDataSetPath1,
         shuffle=False
     )
 
-    # validationDataSet2 = image_dataset_from_directory(
-    #     directory=validationDataSetPath2,
-    #     shuffle=False
-    # )
-    #
-    # validationDataSet3 = image_dataset_from_directory(
-    #     directory=validationDataSetPath3,
-    #     shuffle=False
-    # )
+    validationDataSet2 = image_dataset_from_directory(
+        directory=validationDataSetPath2,
+        shuffle=False
+    )
+
+    validationDataSet3 = image_dataset_from_directory(
+        directory=validationDataSetPath3,
+        shuffle=False
+    )
 
     # model
-    model, history1 = fitModel(trainDataSet1, validationDataSet1, epochs)  # , history
-    # model, history2 = fitModel(trainDataSet1, validationDataSet2, epochs)  # , history
-    # model, history3 = fitModel(trainDataSet2, validationDataSet2, epochs)  # , history
+    model, history0 = fitModel(trainDataSet1, validationDataSet, epochs)  # , history
+    history1 = fitModelNew(validationDataSet1)
+    history2 = fitModelNew(validationDataSet2)  # , history
+    history3 = fitModelNew(validationDataSet3)  # , history
     print(model.summary())
-    tempHistoryPlot(history1)
+    tempHistoryPlotNew(history0, history1, history2, history3)
 
     # # prediction
-    # evaluateResult = model.evaluate(validationDataSet3, verbose=0)
-    # print('loss: ' + str(evaluateResult[0]) + ' acc: ' + str(evaluateResult[1] * 100) + '%')
+    evaluateResult = model.evaluate(validationDataSet1, verbose=0)
+    print('loss: ' + str(evaluateResult[0]) + ' acc: ' + str(evaluateResult[1] * 100) + '%')
 
     predictions = model.predict(validationDataSet1)
     predictions = predictions.round().astype(np.int64)
 
     # predictionInConsole(predictions, validationDataSet, 5)  # batch size
-    predictionsPlot(predictions, 12)
+    predictionsPlot(predictions, 9)
     plt.show()
 
     session.close()
